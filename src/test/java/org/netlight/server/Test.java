@@ -6,8 +6,8 @@ import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
 import io.netty.util.concurrent.GlobalEventExecutor;
-import org.netlight.server.encoding.StandardSerializers;
-import org.netlight.server.messaging.*;
+import org.netlight.encoding.JsonEncodingProtocol;
+import org.netlight.messaging.*;
 
 import javax.net.ssl.SSLException;
 import java.io.BufferedReader;
@@ -23,7 +23,7 @@ public class Test {
     public static void main(String[] args) throws Exception {
         final ServerContext serverCtx = newServerContext();
         final SslContext sslCtx = newSslContext();
-        final Server server = new NettyServer(18874, StandardSerializers.KRYO, serverCtx, sslCtx);
+        final Server server = new NettyServer(18874, JsonEncodingProtocol.INSTANCE, serverCtx, sslCtx);
         server.bind();
         boolean closed = false;
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
@@ -47,7 +47,7 @@ public class Test {
         final MessageQueueLoopHandler handler = new MessageQueueLoopHandler() {
             @Override
             public void onMessage(MessageQueueLoop loop, Message message) {
-                final Long id = message.getLong("message_id");
+                final Number id = message.getNumber("message_id");
                 System.out.println(message.getString("user_input"));
                 Message resp = new Message();
                 resp.put("reply", "time = " + System.currentTimeMillis());
@@ -69,7 +69,7 @@ public class Test {
         return SslContextBuilder.forServer(ssc.certificate(), ssc.privateKey()).build();
     }
 
-    private static MessagePromise send(ConnectionContext ctx, Long id, Message message) {
+    private static MessagePromise send(ConnectionContext ctx, Number id, Message message) {
         if (id != null) {
             message.put("correlation_id", id);
         }

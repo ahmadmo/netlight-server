@@ -14,11 +14,9 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.ssl.SslContext;
-import org.netlight.server.messaging.Message;
+import org.netlight.encoding.EncodingProtocol;
 import org.netlight.util.OSValidator;
-import org.netlight.util.serialization.ObjectSerializer;
 
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -30,19 +28,17 @@ public final class NettyServer implements Server {
     private final int port;
     private final ServerContext serverCtx;
     private final SslContext sslCtx;
-    private final ChannelGroup channels;
     private final ServerChannelInitializer channelInitializer;
+    private final ChannelGroup channels;
     private final AtomicReference<Channel> channel = new AtomicReference<>();
     private final AtomicBoolean running = new AtomicBoolean(false);
 
-    public NettyServer(int port, ObjectSerializer<Message> serializer, ServerContext serverCtx, SslContext sslCtx) {
-        Objects.requireNonNull(serverCtx);
-        Objects.requireNonNull(sslCtx);
+    public NettyServer(int port, EncodingProtocol protocol, ServerContext serverCtx, SslContext sslCtx) {
         this.port = port;
         this.serverCtx = serverCtx;
         this.sslCtx = sslCtx;
+        this.channelInitializer = new ServerChannelInitializer(serverCtx, sslCtx, protocol);
         this.channels = serverCtx.channels();
-        this.channelInitializer = new ServerChannelInitializer(serializer, serverCtx, sslCtx);
     }
 
     @Override

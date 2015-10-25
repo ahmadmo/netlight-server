@@ -6,9 +6,9 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.group.ChannelGroup;
 import io.netty.util.concurrent.Future;
-import org.netlight.server.messaging.Message;
-import org.netlight.server.messaging.MessagePromise;
-import org.netlight.server.messaging.MessageQueueLoopGroup;
+import org.netlight.messaging.Message;
+import org.netlight.messaging.MessagePromise;
+import org.netlight.messaging.MessageQueueLoopGroup;
 
 import java.util.Collection;
 import java.util.Map;

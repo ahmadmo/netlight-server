@@ -1,7 +1,7 @@
 package org.netlight.server;
 
 import io.netty.channel.group.ChannelGroup;
-import org.netlight.server.messaging.MessageQueueLoopGroup;
+import org.netlight.messaging.MessageQueueLoopGroup;
 
 import java.util.Objects;
 

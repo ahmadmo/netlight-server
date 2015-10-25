@@ -1,4 +1,4 @@
-package org.netlight.server.messaging;
+package org.netlight.messaging;
 
 import org.netlight.server.ConnectionContext;
 import org.netlight.util.concurrent.AtomicBooleanField;

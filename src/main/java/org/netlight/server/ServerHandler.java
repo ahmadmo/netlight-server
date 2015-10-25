@@ -2,7 +2,7 @@ package org.netlight.server;
 
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
-import org.netlight.server.messaging.MessagePromise;
+import org.netlight.messaging.MessagePromise;
 
 import java.util.Collection;
 

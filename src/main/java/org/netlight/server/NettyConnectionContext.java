@@ -2,9 +2,10 @@ package org.netlight.server;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
-import org.netlight.server.messaging.MessagePromise;
+import org.netlight.messaging.MessagePromise;
 
 import java.net.SocketAddress;
+import java.util.Collection;
 
 /**
  * @author ahmad
@@ -51,6 +52,11 @@ public final class NettyConnectionContext implements ConnectionContext {
     @Override
     public void sendMessage(MessagePromise message) {
         serverHandler.sendMessage(channelHandlerContext, message);
+    }
+
+    @Override
+    public void sendMessages(Collection<MessagePromise> promises) {
+        serverHandler.sendMessages(channelHandlerContext, promises);
     }
 
     @Override

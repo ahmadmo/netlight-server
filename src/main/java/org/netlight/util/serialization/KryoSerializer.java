@@ -5,24 +5,19 @@ import com.esotericsoftware.kryo.Serializer;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.io.*;
 
 /**
  * @author ahmad
  */
-public final class KryoSerializer<T> implements ObjectSerializer<T> {
+public final class KryoSerializer<I> implements BinaryObjectSerializer<I> {
 
-    private final Class<T> type;
+    private final Class<I> inputType;
     private final Kryo kryo = new Kryo();
 
-    public KryoSerializer(Class<T> type) {
-        this.type = type;
-        kryo.register(type);
-    }
-
-    public Class<T> getType() {
-        return type;
+    public KryoSerializer(Class<I> inputType) {
+        this.inputType = inputType;
+        kryo.register(inputType);
     }
 
     public <S> void register(Class<S> type) {
@@ -42,20 +37,24 @@ public final class KryoSerializer<T> implements ObjectSerializer<T> {
     }
 
     @Override
-    public byte[] serialize(T t) throws IOException {
+    public byte[] serialize(I obj) throws IOException {
         try (ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
              Output output = new Output(byteArrayOutputStream)) {
-            kryo.writeObject(output, t);
+            kryo.writeObject(output, obj);
             output.flush();
             return byteArrayOutputStream.toByteArray();
         }
     }
 
     @Override
-    public T deserialize(byte[] bytes) throws IOException {
+    public I deserialize(byte[] bytes) throws IOException {
         try (Input input = new Input(bytes)) {
-            return kryo.readObject(input, type);
+            return kryo.readObject(input, inputType);
         }
+    }
+
+    public Class<I> getInputType() {
+        return inputType;
     }
 
 }

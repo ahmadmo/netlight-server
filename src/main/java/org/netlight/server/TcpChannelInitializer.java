@@ -1,42 +1,34 @@
 package org.netlight.server;
 
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelInitializer;
-import io.netty.channel.ChannelPipeline;
-import org.netlight.server.encoding.MessageDecoder;
-import org.netlight.server.encoding.MessageEncoder;
-import org.netlight.server.messaging.Message;
-import org.netlight.util.serialization.ObjectSerializer;
+import io.netty.channel.*;
+import org.netlight.encoding.EncodingProtocol;
+
+import java.util.Objects;
 
 /**
  * @author ahmad
  */
 public final class TcpChannelInitializer extends ChannelInitializer<Channel> {
 
-    private final MessageDecoder decoder;
-    private final MessageEncoder encoder;
+    private final EncodingProtocol protocol;
     private final TcpServerHandler handler;
 
-    public TcpChannelInitializer(ObjectSerializer<Message> serializer, ServerContext serverCtx) {
-        decoder = new MessageDecoder(serializer);
-        encoder = new MessageEncoder(serializer);
+    public TcpChannelInitializer(EncodingProtocol protocol, ServerContext serverCtx) {
+        Objects.requireNonNull(protocol);
+        this.protocol = protocol;
         handler = new TcpServerHandler(serverCtx);
     }
 
     @Override
     public void initChannel(Channel ch) {
         ChannelPipeline p = ch.pipeline();
-        p.addLast("decoder", decoder);
-        p.addLast("encoder", encoder);
+        p.addLast("decoder", protocol.decoder());
+        p.addLast("encoder", protocol.encoder());
         p.addLast("handler", handler);
     }
 
-    public MessageDecoder getDecoder() {
-        return decoder;
-    }
-
-    public MessageEncoder getEncoder() {
-        return encoder;
+    public EncodingProtocol getProtocol() {
+        return protocol;
     }
 
     public TcpServerHandler getHandler() {
