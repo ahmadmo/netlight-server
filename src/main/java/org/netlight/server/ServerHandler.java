@@ -1,20 +1,12 @@
 package org.netlight.server;
 
-import io.netty.channel.ChannelHandler;
-import io.netty.channel.ChannelHandlerContext;
-import org.netlight.messaging.MessagePromise;
-
-import java.util.Collection;
+import org.netlight.channel.RichChannelHandler;
 
 /**
  * @author ahmad
  */
-public interface ServerHandler extends ChannelHandler {
+public interface ServerHandler extends RichChannelHandler {
 
     ServerContext getServerContext();
-
-    void sendMessage(ChannelHandlerContext ctx, MessagePromise promise);
-
-    void sendMessages(ChannelHandlerContext ctx, Collection<MessagePromise> promises);
 
 }

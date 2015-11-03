@@ -6,6 +6,7 @@ import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
 import io.netty.util.concurrent.GlobalEventExecutor;
+import org.netlight.channel.ChannelContext;
 import org.netlight.encoding.JsonEncodingProtocol;
 import org.netlight.messaging.*;
 
@@ -18,12 +19,12 @@ import java.util.concurrent.ForkJoinPool;
 /**
  * @author ahmad
  */
-public class Test {
+public final class EndpointTest {
 
     public static void main(String[] args) throws Exception {
         final ServerContext serverCtx = newServerContext();
         final SslContext sslCtx = newSslContext();
-        final Server server = new NettyServer(18874, JsonEncodingProtocol.INSTANCE, serverCtx, sslCtx);
+        final Server server = new NetLightServer(18874, JsonEncodingProtocol.INSTANCE, serverCtx, sslCtx);
         server.bind();
         boolean closed = false;
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {
@@ -61,7 +62,7 @@ public class Test {
         };
         final MessageQueueLoopGroup loopGroup
                 = new MessageQueueLoopGroup(new ForkJoinPool(128), handler, new MessageQueuePerConnectionStrategy(), new LoopShiftingStrategy());
-        return new NettyServerContext(channelGroup, loopGroup);
+        return new NetLightServerContext(channelGroup, loopGroup);
     }
 
     private static SslContext newSslContext() throws CertificateException, SSLException {
@@ -69,7 +70,7 @@ public class Test {
         return SslContextBuilder.forServer(ssc.certificate(), ssc.privateKey()).build();
     }
 
-    private static MessagePromise send(ConnectionContext ctx, Number id, Message message) {
+    private static MessagePromise send(ChannelContext ctx, Number id, Message message) {
         if (id != null) {
             message.put("correlation_id", id);
         }

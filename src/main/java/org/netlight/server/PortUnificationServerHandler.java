@@ -8,6 +8,7 @@ import io.netty.handler.codec.compression.ZlibCodecFactory;
 import io.netty.handler.codec.compression.ZlibWrapper;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslHandler;
+import org.netlight.channel.TcpChannelInitializer;
 
 import java.util.List;
 import java.util.Objects;

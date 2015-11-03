@@ -8,12 +8,12 @@ import java.util.Objects;
 /**
  * @author ahmad
  */
-public final class NettyServerContext implements ServerContext {
+public final class NetLightServerContext implements ServerContext {
 
     private final ChannelGroup channels;
     private final MessageQueueLoopGroup loopGroup;
 
-    public NettyServerContext(ChannelGroup channels, MessageQueueLoopGroup loopGroup) {
+    public NetLightServerContext(ChannelGroup channels, MessageQueueLoopGroup loopGroup) {
         Objects.requireNonNull(channels);
         Objects.requireNonNull(loopGroup);
         this.channels = channels;

@@ -6,6 +6,8 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.group.ChannelGroup;
 import io.netty.util.concurrent.Future;
+import org.netlight.channel.ChannelContext;
+import org.netlight.channel.NetLightChannelContext;
 import org.netlight.messaging.Message;
 import org.netlight.messaging.MessagePromise;
 import org.netlight.messaging.MessageQueueLoopGroup;
@@ -28,7 +30,7 @@ public final class TcpServerHandler extends SimpleChannelInboundHandler<Message>
     private final ServerContext serverCtx;
     private final MessageQueueLoopGroup loopGroup;
     private final ChannelGroup channels;
-    private final Map<String, ConnectionContext> connections = new ConcurrentHashMap<>();
+    private final Map<String, ChannelContext> connections = new ConcurrentHashMap<>();
     private final Map<String, Queue<MessagePromise>> pendingMessages = new ConcurrentHashMap<>();
 
     public TcpServerHandler(ServerContext serverCtx) {
@@ -137,11 +139,11 @@ public final class TcpServerHandler extends SimpleChannelInboundHandler<Message>
         }
     }
 
-    private ConnectionContext getConnectionContext(ChannelHandlerContext ctx) {
+    private ChannelContext getConnectionContext(ChannelHandlerContext ctx) {
         final String id = ctx.channel().toString();
-        ConnectionContext context = connections.get(id);
+        ChannelContext context = connections.get(id);
         if (context == null) {
-            final ConnectionContext c = connections.putIfAbsent(id, context = new NettyConnectionContext(id, ctx, this));
+            final ChannelContext c = connections.putIfAbsent(id, context = new NetLightChannelContext(id, ctx, this));
             if (c != null) {
                 context = c;
             }

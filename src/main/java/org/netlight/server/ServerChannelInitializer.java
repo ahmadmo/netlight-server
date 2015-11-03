@@ -3,6 +3,7 @@ package org.netlight.server;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.handler.ssl.SslContext;
+import org.netlight.channel.TcpChannelInitializer;
 import org.netlight.encoding.EncodingProtocol;
 
 import java.util.Objects;
@@ -20,7 +21,7 @@ public final class ServerChannelInitializer extends ChannelInitializer<Channel> 
         Objects.requireNonNull(sslCtx);
         this.sslCtx = sslCtx;
         this.httpChannelInitializer = new HttpChannelInitializer(serverCtx);
-        this.tcpChannelInitializer = new TcpChannelInitializer(protocol, serverCtx);
+        this.tcpChannelInitializer = new TcpChannelInitializer(protocol, new TcpServerHandler(serverCtx));
     }
 
     @Override
